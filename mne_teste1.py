@@ -1,3 +1,5 @@
+# Nesse script são feitos testes para o estudo das funcionalidades do MNE
+
 import numpy as np
 import mne
 import matplotlib.pyplot as plot
