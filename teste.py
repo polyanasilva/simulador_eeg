@@ -35,14 +35,14 @@ dataframe = pp.DataFrame(data,
 tp.plot_timeseries(dataframe,label_fontsize=20,tick_label_size=10)
 # parcorr_test = parcorr()
 
-ParCorr = parcorr.ParCorr(significance='analytic')
+ParCorr = parcorr.ParCorr(significance='analytic')  # tenho que ver as outras formas
 pcmci = PCMCI(
-    dataframe=dataframe,
-    cond_ind_test=ParCorr,
-    verbosity=1)
+    dataframe = dataframe,
+    cond_ind_test = ParCorr, #define o teste de independencia condicional como sendo a correlação parcial, atraves do objeto parcorr ja criado
+    verbosity = 1)
 
 pcmci.verbosity = 1
-tau_max = 2
+tau_max = 2 #numero maximo de defasagem temporal 
 results = pcmci.run_pcmci(tau_max=tau_max, pc_alpha=None)
 q_matriz = pcmci.get_corrected_pvalues(p_matrix=results['p_matrix'], tau_max=tau_max, fdr_method='fdr_bh')
 
