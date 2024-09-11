@@ -1,4 +1,4 @@
-# teste 2 pyinform com o simEEG 
+# teste 3 com o pyinform no simEEG4
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -69,66 +69,41 @@ for channel in range(numChannels):
     glossokineticSignal = glossokineticAmplitude * np.sin(2 * np.pi * glossokineticFrequency * t[onset:onset + round(duration * Fs)])
     simulatedEEG[channel, onset:onset + len(glossokineticSignal)] += glossokineticSignal
 
-# quantização dos dados 
+# Adicionar canal de eventos para testes "correto" e "incorreto"
+eventChannel = np.zeros(len(t))
+numTrials = 20  # Número total de ensaios
+trialDuration = 1  # Duração de cada ensaio em segundos
+trialSamples = int(trialDuration * Fs)
+
+for _ in range(numTrials):
+    trialStart = np.random.randint(1, len(t) - trialSamples + 1)
+    if np.random.rand() > 0.5:
+        eventChannel[trialStart] = 1  # Ensaio "correto"
+    else:
+        eventChannel[trialStart] = 2  # Ensaio "incorreto"
+
+# Combinar dados EEG e dados de eventos
+simulatedEEG = np.vstack([simulatedEEG, eventChannel])
+
+# Quantização dos dados (necessário para o PyInform)
 def quantize_data(data, num_bins=5):
-    quantize_data = np.digitize(data, np.linspace(np.min(data), np.max(data), num_bins))
-    return quantize_data
+    quantized_data = np.digitize(data, np.linspace(np.min(data), np.max(data), num_bins))
+    return quantized_data
 
-quantize_data = quantize_data(simulatedEEG)
+quantized_EEG = quantize_data(simulatedEEG)
 
-# calculando a entropia de transferencia de x1 para x2, x2 para x3, etc
-te_matrix = np.zeros((16, 16))
-for i in range(16):
-    for j in range(16):
-        if i != j: 
-            te = pyinform.transferentropy._transfer_entropy(quantize_data[:, i], quantize_data[:, j], k=1)
-            te_matrix[i,j] = te
-            print(f'Entropia de transferência de x{i+1} para x{j+1}: te')
-
-print('\nMatriz de entropia de transferência (TE):')
-print(te_matrix)
-
-# visualização da matriz de entropia de transferencia
-
-# plt.figure(figsize=(8, 6))
-# sns.heatmap(te_matrix, annot=True, cmap="viridis", xticklabels=['x1', 'x2', 'x3', 'x4'], yticklabels=['x1', 'x2', 'x3', 'x4'])
-# plt.title('Matriz de Entropia de Transferência (TE)')
-# plt.show()
-
-
-
-# # Adicionar canal de eventos para testes "correto" e "incorreto"
-# eventChannel = np.zeros(len(t))
-# numTrials = 20  # Número total de ensaios
-# trialDuration = 1  # Duração de cada ensaio em segundos
-# trialSamples = int(trialDuration * Fs)
-
-# for _ in range(numTrials):
-#     trialStart = np.random.randint(1, len(t) - trialSamples + 1)
-#     if np.random.rand() > 0.5:
-#         eventChannel[trialStart] = 1  # Ensaio "correto"
-#     else:
-#         eventChannel[trialStart] = 2  # Ensaio "incorreto"
-
-# # Combinar dados EEG e dados de eventos
-# simulatedEEG = np.vstack([simulatedEEG, eventChannel])
-
-# Plotar o sinal EEG simulado para todos os canais
-plt.figure(figsize=(15, 10))
+# Calculando a entropia de transferência entre pares de canais de EEG
+te_matrix = np.zeros((numChannels, numChannels))  # Matriz para armazenar TE entre canais
 for i in range(numChannels):
-    plt.subplot(4, 4, i + 1)
-    plt.plot(t, simulatedEEG[i, :])
-    plt.xlabel('Tempo (s)')
-    plt.ylabel('Amplitude')
-    plt.title(f'Canal {i + 1}')
-plt.tight_layout()
+    for j in range(numChannels):
+        if i != j:  # Evita calcular TE do canal consigo mesmo
+            te = pyinform.transferentropy.transfer_entropy(quantized_EEG[i, :], quantized_EEG[j, :], k=1)
+            te_matrix[i, j] = te
+            print(f"Entropia de transferência de Canal {i+1} para Canal {j+1}: {te}")
 
-# Plotar o canal de eventos
-# plt.figure(figsize=(10, 5))
-# plt.stem(t, simulatedEEG[-1, :], basefmt=" ")
-# plt.xlabel('Tempo (s)')
-# plt.ylabel('Tipo de Evento')
-# plt.title('Canal de Eventos')
-# plt.yticks([0, 1, 2], ['Sem Evento', 'Correto', 'Incorreto'])
-
+# Visualizando a matriz de entropia de transferência
+plt.figure(figsize=(10, 8))
+sns.heatmap(te_matrix, annot=True, cmap="viridis", xticklabels=[f'C{i+1}' for i in range(numChannels)], 
+            yticklabels=[f'C{i+1}' for i in range(numChannels)])
+plt.title('Matriz de Entropia de Transferência (TE) entre Canais de EEG')
 plt.show()
