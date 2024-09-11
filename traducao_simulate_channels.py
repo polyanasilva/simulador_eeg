@@ -10,6 +10,8 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import pyinform 
+import seaborn as sns
 
 # Definir os 18 canais de EEG com base no sistema 10/20
 channels = ['Fp1', 'Fp2', 'F7', 'F3', 'Fz', 'F4', 'F8', 'T3', 'C3', 'Cz', 'C4', 'T4', 'T5', 'P3', 'Pz', 'P4', 'O1', 'O2']
@@ -33,7 +35,7 @@ for i in range(len(channels)):
 
 # Introduzir sincronia com atraso de fase entre pares específicos de canais
 synchrony_pairs = [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9)]  # Pares de canais para sincronizar (em Python, índices começam em 0)
-phase_delays = [0.1, 0.2, 0.3, 0.4, 0.5]  # Atrasos de fase em segundos
+phase_delays = [1, 1, 1, 1, 1]  # Atrasos de fase em segundos
 
 for k, (ch1, ch2) in enumerate(synchrony_pairs):
     delay_samples = int(round(phase_delays[k] * Fs))
@@ -41,6 +43,32 @@ for k, (ch1, ch2) in enumerate(synchrony_pairs):
     # Aplicar atraso de fase ao segundo canal do par
     if delay_samples < len(t):
         EEG[ch2, delay_samples:] = EEG[ch1, :-delay_samples]
+
+# quantização dos dados
+def quantize_data(data, num_bins=5):
+    quantize_data = np.digitize(data, np.linspace(np.min(data), np.max(data), num_bins))
+    return quantize_data
+
+quantized_data = quantize_data(EEG)
+
+# calculando a entropia de transferencia entre pares de variaveis
+# exemplo: transferencia x1 para x2, x2 para x3, etc
+
+numChannels = len(channels)
+te_matrix = np.zeros((numChannels, numChannels))
+for i in range(numChannels):
+    for j in range(numChannels):
+        if i != j: 
+            te = pyinform.transferentropy.transfer_entropy(quantized_data[i, :], quantized_data[j, :], k=1)
+            te_matrix[i,j] = te
+            print(f'Entropia de transferência de Canal {i+1} para Canal {j+1}: {te}')
+
+# visualizando a matriz de entropia de transferência
+plt.figure(figsize=(10,8))
+sns.heatmap(te_matrix, annot=True, cmap='viridis', xticklabels=[f'C{i+1}' for i in range(numChannels)], yticklabels=[f'C{i+1}' for i in range(numChannels)])
+plt.title('Matriz de Entropia de Transferência (TE) entre canais de EEG')
+
+
 
 # Plotar os sinais de EEG gerados
 plt.figure(figsize=(10, 15))
