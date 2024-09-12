@@ -87,28 +87,22 @@ for _ in range(numTrials):
 # Combinar dados EEG e dados de eventos
 simulatedEEG = np.vstack([simulatedEEG, eventChannel])
 
+# Plotar o sinal EEG simulado para todos os canais
+plt.figure(figsize=(15, 10))
+for i in range(numChannels):
+    plt.subplot(4, 4, i + 1)
+    plt.plot(t, simulatedEEG[i, :])
+    plt.xlabel('Tempo (s)')
+    plt.ylabel('Amplitude')
+    plt.title(f'Canal {i + 1}')
+plt.tight_layout()
 
+# Plotar o canal de eventos
+plt.figure(figsize=(10, 5))
+plt.stem(t, simulatedEEG[-1, :], basefmt=" ")
+plt.xlabel('Tempo (s)')
+plt.ylabel('Tipo de Evento')
+plt.title('Canal de Eventos')
+plt.yticks([0, 1, 2], ['Sem Evento', 'Correto', 'Incorreto'])
 
-
-
-
-
-# # Plotar o sinal EEG simulado para todos os canais
-# plt.figure(figsize=(15, 10))
-# for i in range(numChannels):
-#     plt.subplot(4, 4, i + 1)
-#     plt.plot(t, simulatedEEG[i, :])
-#     plt.xlabel('Tempo (s)')
-#     plt.ylabel('Amplitude')
-#     plt.title(f'Canal {i + 1}')
-# plt.tight_layout()
-
-# # Plotar o canal de eventos
-# plt.figure(figsize=(10, 5))
-# plt.stem(t, simulatedEEG[-1, :], basefmt=" ")
-# plt.xlabel('Tempo (s)')
-# plt.ylabel('Tipo de Evento')
-# plt.title('Canal de Eventos')
-# plt.yticks([0, 1, 2], ['Sem Evento', 'Correto', 'Incorreto'])
-
-# plt.show()
+plt.show()

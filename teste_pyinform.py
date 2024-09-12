@@ -1,4 +1,6 @@
 # pyinform
+# nesse codigo eu usei a funcao criada no tigramite e coloquei a biblioteca pyinform no lugar
+# faz uma matriz 4 x 4
 
 import numpy as np
 import pyinform

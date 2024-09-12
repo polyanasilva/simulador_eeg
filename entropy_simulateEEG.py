@@ -4,6 +4,7 @@
 # This function simulates 18 EEG channels where ther synchrony for some pairs of channels
 # This synchrony occurs with some phase delay since a given signal takes time to go from one cortical area to another
 # Each channel is a non-stationary, non-linear time series
+# Posteriormente foi aplicado o cálculo da entropia de transferência sobre os dados simulados
 
 # Assumptions and limitations:
 # the code assumes a sampling frequency of 256 Hz and a total duration of 10 seconds for the EEG signal
@@ -53,7 +54,6 @@ quantized_data = quantize_data(EEG)
 
 # calculando a entropia de transferencia entre pares de variaveis
 # exemplo: transferencia x1 para x2, x2 para x3, etc
-
 numChannels = len(channels)
 te_matrix = np.zeros((numChannels, numChannels))
 for i in range(numChannels):
@@ -67,8 +67,6 @@ for i in range(numChannels):
 plt.figure(figsize=(10,8))
 sns.heatmap(te_matrix, annot=True, cmap='viridis', xticklabels=[f'C{i+1}' for i in range(numChannels)], yticklabels=[f'C{i+1}' for i in range(numChannels)])
 plt.title('Matriz de Entropia de Transferência (TE) entre canais de EEG')
-
-
 
 # Plotar os sinais de EEG gerados
 plt.figure(figsize=(10, 15))
