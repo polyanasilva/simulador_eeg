@@ -1,4 +1,4 @@
-# nesse código tentarei traduzir o arquivo sim_EEG_4m. para o formato python
+# nesse código traduzi o arquivo sim_EEG_4m. para o formato python
 
 # Description: This code simulates a multi_channel EEG recording with high and low frquency components including artifacts and correlated channels. It also adds an event channel to simulate "right" and "wrong" trials and saves the simulated EEG data and parameters into a .mat file.
 

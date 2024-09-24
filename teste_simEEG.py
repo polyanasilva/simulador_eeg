@@ -87,6 +87,31 @@ for _ in range(numTrials):
 # Combinar dados EEG e dados de eventos
 simulatedEEG = np.vstack([simulatedEEG, eventChannel])
 
+# Inclusao do calculo de causualidade sobre esses dados simulados
+# conversão para que possa ser analisado pelo tigramite
+var_names = ['Ch1', 'Ch2', 'Ch3', 'Ch4', 'Ch5', 'Ch6', 'Ch7', 'Ch8', 'Ch9', 'Ch10', 'Ch11', 'Ch12', 'Ch13', 'Ch14','Ch15', 'Ch16']
+dataframe = pp.DataFrame(simulatedEEG,
+                         datatime=np.arange(len(simulatedEEG)),
+                         var_names=var_names)
+
+tp.plot_timeseries(dataframe, label_fontsize=20, tick_label_size=10)
+
+Parcorr = parcorr.ParCorr(significance='analytic')
+pcmci = PCMCI(
+    dataframe = dataframe
+    cond_ind_test= Parcorr
+    verbosity= 1
+)
+pcmci.verbosity = 1
+tau_max = 2
+results = pcmci.run_pcmci(tau_max=tau_max, pc_alpha=None)
+q_matriz = pcmci.get_corrected_pvalues(p_matrix=results['p_matrix'], tau_max=tau_max, fdr_method='fdr_bh')
+
+tp.plot_graph(graph = results['graph'],
+              val_matrix= results['val_matriz'])
+
+
+
 # Plotar o sinal EEG simulado para todos os canais
 plt.figure(figsize=(15, 10))
 for i in range(numChannels):

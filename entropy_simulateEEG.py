@@ -4,6 +4,7 @@
 # This function simulates 18 EEG channels where ther synchrony for some pairs of channels
 # This synchrony occurs with some phase delay since a given signal takes time to go from one cortical area to another
 # Each channel is a non-stationary, non-linear time series
+
 # Posteriormente foi aplicado o cálculo da entropia de transferência sobre os dados simulados
 
 # Assumptions and limitations:
@@ -36,7 +37,7 @@ for i in range(len(channels)):
 
 # Introduzir sincronia com atraso de fase entre pares específicos de canais
 synchrony_pairs = [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9)]  # Pares de canais para sincronizar (em Python, índices começam em 0)
-phase_delays = [1, 1, 1, 1, 1]  # Atrasos de fase em segundos
+phase_delays = [0.1, 0.2, 0.3, 0.4, 0.5]  # Atrasos de fase em segundos
 
 for k, (ch1, ch2) in enumerate(synchrony_pairs):
     delay_samples = int(round(phase_delays[k] * Fs))
@@ -46,7 +47,7 @@ for k, (ch1, ch2) in enumerate(synchrony_pairs):
         EEG[ch2, delay_samples:] = EEG[ch1, :-delay_samples]
 
 # quantização dos dados
-def quantize_data(data, num_bins=5):
+def quantize_data(data, num_bins=20):
     quantize_data = np.digitize(data, np.linspace(np.min(data), np.max(data), num_bins))
     return quantize_data
 
@@ -72,7 +73,7 @@ plt.title('Matriz de Entropia de Transferência (TE) entre canais de EEG')
 plt.figure(figsize=(10, 15))
 for i in range(len(channels)):
     plt.subplot(len(channels), 1, i + 1)
-    plt.plot(t, EEG[i, :])
+    plt.plot(t, quantized_data[i, :])
     plt.title(f'Canal {channels[i]}')
     plt.xlabel('Tempo (s)')
     plt.ylabel('Amplitude')

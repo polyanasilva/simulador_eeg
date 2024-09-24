@@ -1,3 +1,5 @@
+# nesse codigo foi criada uma função que simula dados de 4 canais de eeg correlacionados e depois utiliza a biblioteca tigramite pra calcular a influencia de uma "canal" sobre o outro
+
 import numpy as np
 import matplotlib.pyplot as plt
 import tigramite
