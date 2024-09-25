@@ -24,6 +24,7 @@ dest_channel = eeg_data[1, :]    # Canal de destino (ex: canal 2)
 # Criação da variável de origem e destino com dados de EEG reais
 sourceArray = source_channel  # Substitua com o canal de origem desejado
 destArray = dest_channel      # Substitua com o canal de destino desejado
+print(sourceArray)
 
 # Criação do objeto de cálculo de TE e configuração
 teCalcClass = JPackage("infodynamics.measures.continuous.kraskov").TransferEntropyCalculatorKraskov
@@ -31,6 +32,7 @@ teCalc = teCalcClass()
 teCalc.setProperty("NORMALISE", "true")  # Normaliza os dados (opcional)
 teCalc.initialise(1)  # Use história de comprimento 1
 teCalc.setProperty("k", "4")  # Define o parâmetro K para 4 pontos mais próximos
+print(teCalcClass)
 
 # Configuração das observações com dados de EEG
 # Aqui, assumo que sourceArray e destArray são listas numpy
