@@ -7,12 +7,12 @@ import os
 
 
 def get_eeg_data():
-    LOCAL_ARQUIVO_DADOS_EEG = "dados/dados_EEG.csv"
+    LOCAL_ARQUIVO_DADOS_EEG = "data/dados_EEG.csv"
     EEG = []
     
     # Definir os 18 canais de EEG com base no sistema 10-20
-    # channels = ['Fp1', 'Fp2', 'F7', 'F3', 'Fz', 'F4', 'F8', 'T3', 'C3', 'Cz', 'C4', 'T4', 'T5', 'P3', 'Pz', 'P4', 'O1', 'O2']
-    channels = ['Fp1', 'Fp2']
+    channels = ['Fp1', 'Fp2', 'F7', 'F3', 'Fz', 'F4', 'F8', 'T3', 'C3', 'Cz', 'C4', 'T4', 'T5', 'P3', 'Pz', 'P4', 'O1', 'O2']
+    # channels = ['Fp1', 'Fp2']
 
     # Especificações de tempo
     Fs = 256  # Frequência de amostragem em Hz
@@ -106,3 +106,5 @@ def get_eeg_data():
 #     plt.ylabel('Amplitude')
 # plt.tight_layout()
 # plt.show()
+
+criar_Dados = get_eeg_data()

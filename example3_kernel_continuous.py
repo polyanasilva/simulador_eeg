@@ -1,3 +1,5 @@
+# Example 3: Simple transfer entropy (TE) calculation on continuous-valued data using the (box) kernel-estimator TE calculator.
+
 from jpype import *
 import random, math
 

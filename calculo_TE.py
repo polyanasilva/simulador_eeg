@@ -2,12 +2,13 @@ from jpype import *
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import te_jidt_simulateEEG as jiEEG
+import example4_kernel as jiEEG
 
 # Localização do JAR e inicialização da JVM
 jarLocation = "lib/jidt/infodynamics.jar"
 startJVM(getDefaultJVMPath(), "-ea", "-Djava.class.path=" + jarLocation)
 
+# data = pd.read_csv('simulateEEG.csv')
 data = jiEEG.get_eeg_data()
 
 # # Criação do objeto de cálculo de TE e configuração
