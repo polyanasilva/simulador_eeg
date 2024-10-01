@@ -10,6 +10,7 @@
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 EEG_DATA_FILE_LOCATION = "data/simulateEEG.csv"
 
@@ -32,8 +33,8 @@ for i in range(len(channels)):
                 0.1 * np.random.randn(len(t)))
     
 # Introduce phase-lagged synchronization between specific pairs of channels
-synchrony_pairs = [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9)]  
-phase_delays = [0.1, 0.2, 0.3, 0.4, 0.5]
+synchrony_pairs = [(0, 1), (2, 3), (4, 5), (6, 7), (8, 9), (10, 11), (12, 13), (14, 15), (16, 17)]  # Pares de canais para sincronizar (em Python, índices começam em 0)
+phase_delays = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]  # Atrasos de fase em segundos
 
 for k, (ch1, ch2) in enumerate(synchrony_pairs):
     delay_samples = int(round(phase_delays[k] * Fs))
@@ -42,6 +43,20 @@ for k, (ch1, ch2) in enumerate(synchrony_pairs):
     if delay_samples < len(t):
         EEG[ch2, delay_samples:] = EEG[ch1, :-delay_samples]
 
+# converter para a forma que a jidt aceita
+# EEG = np.transpose(EEG)
+
 # Create the source and destination with real EEG data
 df = pd.DataFrame(EEG)
 df.to_csv(EEG_DATA_FILE_LOCATION, index=False)
+
+# Plotar os sinais de EEG gerados
+plt.figure(figsize=(10, 15))
+for i in range(len(channels)):
+    plt.subplot(len(channels), 1, i + 1)
+    plt.plot(t, EEG[i, :])
+    plt.title(f'Canal {channels[i]}')
+    plt.xlabel('Tempo (s)')
+    plt.ylabel('Amplitude')
+plt.tight_layout()
+plt.show()
